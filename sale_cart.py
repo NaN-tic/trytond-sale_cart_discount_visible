@@ -15,12 +15,20 @@ class SaleCart:
 
     def update_prices(self):
         if hasattr(self, 'product'):
+            Product = Pool().get('product.product')
+
             self.discount = Decimal(0)
             res = super(SaleCart, self).update_prices()
-            if self.gross_unit_price and self.unit_price:
-                discount = 1 - (self.unit_price / self.gross_unit_price)
+            gross_unit_price = Product.get_sale_price([self.product],
+                    self.quantity or 0)[self.product.id]
+            if gross_unit_price:
+                unit_price_digits = self.__class__.gross_unit_price.digits[1]
+                discount_digits = self.__class__.discount.digits[1]
+                res['gross_unit_price'] = gross_unit_price.quantize(
+                    Decimal(str(10.0 ** -unit_price_digits)))
+                discount = 1 - (res['unit_price'] / res['gross_unit_price'])
                 res['discount'] = discount.quantize(
-                    Decimal(str(10.0 ** -DISCOUNT_DIGITS)))
+                    Decimal(str(10.0 ** -discount_digits)))
         else:
             res = super(SaleCart, self).update_prices()
         return res
