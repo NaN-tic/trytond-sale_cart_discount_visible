@@ -13,9 +13,9 @@ class SaleCart:
     __name__ = 'sale.cart'
 
     def update_prices(self):
-        if hasattr(self, 'product'):
-            Product = Pool().get('product.product')
+        Product = Pool().get('product.product')
 
+        if self.product:
             with Transaction().set_context(without_special_price=True):
                 self.discount = Decimal(0)
                 res = super(SaleCart, self).update_prices()
