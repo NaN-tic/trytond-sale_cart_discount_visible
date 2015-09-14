@@ -16,12 +16,14 @@ class SaleCart:
     def update_prices_visible_discount(self):
         Product = Pool().get('product.product')
 
+        gross_unit_price = self.gross_unit_price
         unit_price = self.gross_unit_price
         discount = Decimal(0)
 
-        with Transaction().set_context(without_special_price=True):
-            prices = Product.get_sale_price([self.product], self.quantity or 0)
-        gross_unit_price = prices[self.product.id]
+        if self.product:
+            with Transaction().set_context(without_special_price=True):
+                prices = Product.get_sale_price([self.product], self.quantity or 0)
+            gross_unit_price = prices[self.product.id]
 
         if gross_unit_price:
             unit_price_digits = self.__class__.gross_unit_price.digits[1]
