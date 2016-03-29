@@ -7,10 +7,10 @@ from trytond.model import fields
 from trytond.transaction import Transaction
 
 __all__ = ['SaleCart']
-__metaclass__ = PoolMeta
 
 
 class SaleCart:
+    __metaclass__ = PoolMeta
     __name__ = 'sale.cart'
 
     def update_prices_visible_discount(self):
